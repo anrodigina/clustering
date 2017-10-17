@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/AsyaRodigina/hse/clustering/main.cpp
+algorithm
+-
+iostream
+-
+fstream
+-
+random
+-
+string
+-
+vector
+-
+cstdlib
+-
+
