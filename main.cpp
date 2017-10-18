@@ -202,12 +202,12 @@ void GNUPlotClusters2D(vector<Point2D> &points, const vector<size_t> &labels, si
 
 
 int main() {
-    std::vector<Point2D> centers{{0, 0}, {6, -1}, {5, 6}, {5, -1}, {2, 3}};
-    std::vector<double> xVariances{0.4, 0.3, 0.3, 0.4, 0.3, 0.4};
-    std::vector<double> yVariances{0.5, 0.5, 0.3, 0.5, 0.4, 0.4};
+    std::vector<Point2D> centers{{0, 0}, {6, -1}, {6, 5}, {3, -1}, {3, 2}, {-2, 6}, {3, 7}};
+    std::vector<double> xVariances{0.8, 0.8, 0.7, 0.7, 0.7, 0.6, 0.7, 0.4};
+    std::vector<double> yVariances{0.9, 0.8, 0.9, 0.5, 0.6, 0.6, 0.6, 0.5};
     auto points = Random2DClusters(centers, xVariances, yVariances, 1000);
 
-    const size_t kClusterCount = 3;
+    const size_t kClusterCount = 2;
     vector<size_t> labels(points.size(), 0);
     GNUPlotClusters2D(points, labels, 1, "plot_base");
 
