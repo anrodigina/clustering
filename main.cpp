@@ -2,16 +2,17 @@
 #include <iostream>
 #include <fstream>
 #include <random>
+#include <set>
 #include <string>
 #include <vector>
 #include <cstdlib>
 
-const size_t kClusterCount = 4;
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
+using std::set;
 using std::vector;
 
 
@@ -75,7 +76,7 @@ void RenumerateLabels(vector<size_t> &rawLabels) {
     }
 }
 
-vector<size_t> ClusterGraphMST(const vector<Edge> edges, size_t vertexCount, size_t clusterCount) {
+vector<size_t> ClusterGraphMST(vector<Edge> edges, size_t vertexCount, size_t clusterCount) {
     DisjointSetUnion sets(vertexCount);
     std::sort(edges.begin(), edges.end(), [](Edge a, Edge b) { return a.weight < b.weight; });
     size_t counter = 0;
@@ -114,7 +115,7 @@ vector<size_t> ClusterMST(const vector<T> &objects, Dist distance, size_t cluste
 }
 
 template<typename T>
-void recalculate_centers(const vector<size_t>& clusters, const vector<T>& objects, vector<Point2D>& centers) {
+void recalculate_centers(vector<size_t>& clusters, vector<T>& objects, vector<Point2D>& centers) {
     vector<size_t> point_counts(clusters.size());
     centers.assign(clusters.size(), {0, 0});
     for (size_t i = 0; i < objects.size(); ++i) {
@@ -129,13 +130,14 @@ void recalculate_centers(const vector<size_t>& clusters, const vector<T>& object
 }
 
 template<typename T, typename Dist>
-vector<size_t> ClusterMinDistToCenter(const vector<T> &objects, Dist distance, size_t clusterCount) {
+vector<size_t> ClusterMinDistToCenter(vector<T> &objects, Dist distance, size_t clusterCount) {
     vector<size_t> clusters(objects.size());
-    for (auto& cluster : clusters) {
-        cluster = rand() % clusterCount;
+    vector<Point2D> centers;
+    set<Point2D> centrs;
+    while (centers.size() < clusterCount) {
+        size_t new_center = rand() % objects.size();
+        centers.push_back(objects[new_center]);
     }
-    vector<Point2D> centers(clusterCount);
-    recalculate_centers(clusters, objects, centers);
 
     bool changed;
     do {
@@ -180,7 +182,7 @@ vector<Point2D> Random2DClusters(const vector<Point2D> &centers, const vector<do
     return results;
 }
 
-void GNUPlotClusters2D(const vector<Point2D> &points, const vector<size_t> &labels, size_t clustersCount,
+void GNUPlotClusters2D(vector<Point2D> &points, const vector<size_t> &labels, size_t clustersCount,
                        const string &outFolder) {
     std::ofstream scriptOut(outFolder + "/script.txt");
     scriptOut << "set term png;\nset output \"plot.png\"\n";
@@ -201,10 +203,11 @@ void GNUPlotClusters2D(const vector<Point2D> &points, const vector<size_t> &labe
 
 int main() {
     std::vector<Point2D> centers{{0, 0}, {6, -1}, {5, 6}, {5, -1}, {2, 3}};
-    std::vector<double> xVariances{0.3, 0.3, 0.3, 0.4, 0.3, 0.3};
-    std::vector<double> yVariances{0.6, 0.5, 0.3, 0.5, 0.4, 0.3};
+    std::vector<double> xVariances{0.4, 0.3, 0.3, 0.4, 0.3, 0.4};
+    std::vector<double> yVariances{0.5, 0.5, 0.3, 0.5, 0.4, 0.4};
     auto points = Random2DClusters(centers, xVariances, yVariances, 1000);
 
+    const size_t kClusterCount = 3;
     vector<size_t> labels(points.size(), 0);
     GNUPlotClusters2D(points, labels, 1, "plot_base");
 
@@ -213,6 +216,6 @@ int main() {
 
     labels = ClusterMinDistToCenter(points, EuclidianDistance, kClusterCount);
     GNUPlotClusters2D(points, labels, kClusterCount, "plot_mdc");
-    
+
     return 0;
 }

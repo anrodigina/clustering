@@ -1,3 +1,0 @@
-cd plot_base/ && gnuplot script.txt && cd ..
-cd plot_mst/ && gnuplot script.txt && cd ..
-cd plot_mdc/ && gnuplot script.txt && cd ..
